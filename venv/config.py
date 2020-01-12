@@ -28,7 +28,8 @@ member_link_enabled = True
 allow_multiple_scans_a_day = False
 
 
-zebra_printer_name = "Zebra_Technologies_ZTC_ZD410-203dpi_ZPL"
+# zebra_printer_name = "Zebra_Technologies_ZTC_ZD410-203dpi_ZPL"
+zebra_printer_name = 'ZDesigner ZD410-203dpi ZPL'
 zebra_print_enabled = True
 
 log_errors_to_file = True

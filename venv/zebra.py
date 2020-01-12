@@ -26,7 +26,7 @@ import sys
 
 if sys.platform.lower().startswith('win'):
     IS_WINDOWS = True
-    import pywin as win32print
+    import win32print
 else:
     IS_WINDOWS = False
     import subprocess

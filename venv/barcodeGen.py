@@ -73,10 +73,10 @@ class Barcoder:
         ^PW406
         ^LL0203
         ^LS0
-        ^BY3,3,107^FT20,121^BCN,,Y,N
+        ^BY3,3,54^FT20,0^BCN,,N,N
         ^FD>;""" + str(member_id) + """^FS
-        ^FT8,187^A0N,28,28^FH\^FD""" + name_str[0:20] + """^FS
-        ^FT262,187^A0N,28,28^FH\^FD""" + member_type_str[0:12] + """^FS
+        ^FT8,147^A0N,100,60^FH\^FD""" + name_str[0:14] + """^FS
+        ^FT140,187^A0N,28,28^FH\^FD""" + member_type_str[0:12] + """^FS
         ^PQ1,0,1,Y^XZ
         """
 
@@ -85,6 +85,7 @@ class Barcoder:
             print("ZPL Doc: ")
             print(z_design)
         else:
+            testing = printer.getqueues()
             printer.setqueue(config.zebra_printer_name)
             printer.setup(direct_thermal=True, label_height=(203, 32), label_width=406)  # 2" x 1" direct thermal label
             printer.output(z_design)
