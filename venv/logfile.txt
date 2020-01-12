@@ -1,0 +1,9 @@
+ERR>> Exception ignored in: 
+ERR>> <__main__.StdoutRedirector object at 0x03D75390>
+ERR>> 
+
+ERR>> AttributeError
+ERR>> : 
+ERR>> 'StdoutRedirector' object has no attribute 'flush'
+ERR>> 
+
