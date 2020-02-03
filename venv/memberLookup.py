@@ -14,6 +14,7 @@ class SMWContext(Enum):
     Search = 1
     SplashEntry = 2
     EditMember = 3
+    MembersHereNow = 4
 
 
 class MemberLookup():
@@ -32,6 +33,12 @@ class MemberLookup():
 
             self.name_entry_sv.set(str(search_str))
             self.search_for_member(event=None)
+
+        if context == SMWContext.MembersHereNow:
+            self.ml_enter.withdraw()
+            self.context = context
+
+            self.members_logged_in(event=None)
 
     def populate_searcher(self):
         row1 = Frame(self.ml_enter)
@@ -87,7 +94,10 @@ class MemberLookup():
         except LookupError:
             messagebox.showwarning(title="Problem locating members!",
                                    message="No members logged in today!")
-            self.ml_enter.focus()
+            if self.context == SMWContext.MembersHereNow:
+                self.ml_enter.destroy()
+            else:
+                self.ml_enter.focus()
 
     def display_search_results(self, results):
 
