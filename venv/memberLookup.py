@@ -69,9 +69,12 @@ class MemberLookup():
         except LookupError:
             messagebox.showwarning(title="Problem locating member!",
                                    message="No members with name \"" + self.name_entry_sv.get() + "\" found!")
-            self.ml_enter.deiconify()
-            self.ml_enter.focus()
-            self.name_entry.focus_force()
+            if self.context == SMWContext.SplashEntry:
+                self.ml_enter.destroy()
+            else:
+                self.ml_enter.deiconify()
+                self.ml_enter.focus()
+                self.name_entry.focus_force()
 
     def members_logged_in(self, event=None):
         # Displays members logged in during the current calendar day
