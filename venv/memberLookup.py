@@ -172,6 +172,7 @@ class MemberLookup():
         elif self.context == SMWContext.SplashEntry:  # In search window popped up from splash (first) screen
             Button(self.buttons, text="Print new barcode", command=self.newBarcode).grid(row=2, column=1, padx=3)
             Button(self.buttons, text="Login Member", command=self.search_return).grid(row=2, column=2, padx=3)
+            Button(self.buttons, text="Edit Member", command=self.edit_from_splash).grid(row=2, column=4, padx=3)
             if config.sign_offs_enabled:
                 Button(self.buttons, text="View Sign Offs", command=self.edit_sign_offs).grid(row=2, column=3, padx=3)
 
@@ -181,6 +182,12 @@ class MemberLookup():
 
         self.center(self.results_window)
         self.results_window.focus_force()
+
+
+    def edit_from_splash(self):
+        self.context = SMWContext.EditMember
+        self.search_return()
+        self.context = SMWContext.SplashEntry
 
 
     def newBarcode(self):
@@ -211,6 +218,7 @@ class MemberLookup():
         except IndexError:
             messagebox.showwarning(title="Problem locating member!",
                                    message="Please select a member from the list first")
+            self.results_window.focus_force()
 
 
     def copyMID(self):
@@ -227,6 +235,7 @@ class MemberLookup():
         except IndexError:
             messagebox.showwarning(title="Problem locating member!",
                                    message="Please select a member from the list first")
+            self.results_window.focus_force()
 
     def printStickers(self):
         sticker = Barcoder()
@@ -252,6 +261,7 @@ class MemberLookup():
         except IndexError:
             messagebox.showwarning(title="Problem locating member!",
                                    message="Please select a member from the list first")
+            self.results_window.focus_force()
 
     def search_return(self):
         cur_item = self.tree.focus()
@@ -276,3 +286,4 @@ class MemberLookup():
         except IndexError:
             messagebox.showwarning(title="Problem locating member!",
                                    message="Please select a member from the list first")
+            self.results_window.focus_force()

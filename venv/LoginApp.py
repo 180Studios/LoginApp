@@ -66,7 +66,7 @@ class Splash(tk.Frame):
 
         tk.Button(command=self.add_new_member_pushed, text="Add New Member").pack(side='left', expand=1, padx=5, pady=10)
 
-        tk.Button(command=self.update_member_pushed, text="Update Member").pack(side='right', expand=1, padx=5, pady=10)
+        #tk.Button(command=self.update_member_pushed, text="Update Member").pack(side='right', expand=1, padx=5, pady=10)
 
         #tk.Button(command=self.lookup_member_pushed, text="Lookup Member").pack(side='bottom', expand=1, padx=5, pady=10)
         tk.Button(command=self.members_here_now_pushed, text="Members Here Now").pack(side='bottom', expand=1, padx=5, pady=10)
