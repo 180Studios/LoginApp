@@ -111,18 +111,24 @@ class EditMemberWindow:
                     pass
                 else:
                     self.entry_data[form].config(state=DISABLED)
-            self.add_credits_button = Button(self.emw, text="Add credits", command=self.add_credits,
+
+            # Create frame for button grid
+            self.buttons = Frame(self.emw)
+            self.buttons.grid()
+
+            self.add_credits_button = Button(self.buttons, text="Add credits", command=self.add_credits,
                                              state=DISABLED)
-            self.add_credits_button.grid(column=0, pady=10)
+            self.add_credits_button.grid(row=1,  column=0, padx=15, pady=10)
 
             if config.sign_offs_enabled:
-                self.edit_member_sign_offs = Button(self.emw, text="Edit Member Sign Offs", command=self.edit_sign_offs,
+                self.edit_member_sign_offs = Button(self.buttons, text="Edit Member Sign Offs", command=self.edit_sign_offs,
                                                     state=DISABLED)
-                self.edit_member_sign_offs.grid(column=0)
+                self.edit_member_sign_offs.grid(row=1, column=2, padx=15, pady=10)
 
             self.entry_data["member_type"].bind("<<ComboboxSelected>>", self.switch_expiration_type)
 
-            Button(self.emw, text="Update Member", command=self.enter_to_db).grid(column=0, pady=20)
+            Button(self.buttons, text="Print New Barcode", command=self.print_barcode).grid(row=2, column=0, padx=15, pady=10)
+            Button(self.buttons, text="Update Member", command=self.enter_to_db).grid(row=2, column=2, padx=15, pady=10)
 
     def retrieve_member(self, event=None, member_id=None):
         if member_id:
@@ -260,6 +266,29 @@ class EditMemberWindow:
         except Exception as e:
             messagebox.showwarning(title="Problem adding member!", message="An exception occured:\n" + str(e))
             self.emw.focus_force()
+
+    def print_barcode(self):
+        if self.validate_entries():
+            member_id = int(self.entry_data["id"].get())
+            first_name = self.entry_data["name_first"].get().capitalize()
+            last_name = self.entry_data["name_last"].get().capitalize()
+            member_type = self.entry_data["member_type"].get()
+            member_types_inv = {v: k for k, v in config.member_types.items()}  # https://stackoverflow.com/a/483833
+            member_type_str = member_types_inv.get(member_type)
+
+            name_str = first_name + " " + last_name
+
+            barcode = Barcoder()
+
+            if config.zebra_print_enabled:
+                if member_type_str == "student_annual":
+                    member_type_str == "student"
+                barcode.print_zebra(member_id, name_str=name_str, member_type_str=member_type_str.capitalize())
+            else:
+                barcode.create_barcode(member_id)
+                barcode.open_barcode()
+        else:
+            messagebox.showwarning(title="Problem printing barcode!", message="Data not completely filled")
 
     def edit_sign_offs(self):
         signOffs = memberSignOffs(member_id=int(self.entry_data["id"].get()))
