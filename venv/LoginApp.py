@@ -47,7 +47,7 @@ class Splash(tk.Frame):
             sys.stderr = StdoutRedirector("ERR>> ")
 
     def create_splash(self):
-        self.scannerLabelText = tk.Label(text='Scan Member Card:')
+        self.scannerLabelText = tk.Label(text='Scan Member Card\n- OR -\nSearch By Member First Or Last Name:')
         self.scannerLabelText.pack(pady=10)
         self.scannerLabelText.pack(side='top', expand=0)
 
@@ -66,9 +66,10 @@ class Splash(tk.Frame):
 
         tk.Button(command=self.add_new_member_pushed, text="Add New Member").pack(side='left', expand=1, padx=5, pady=10)
 
-        tk.Button(command=self.update_member_pushed, text="Update Member").pack(side='right', expand=1, padx=5, pady=10)
+        #tk.Button(command=self.update_member_pushed, text="Update Member").pack(side='right', expand=1, padx=5, pady=10)
 
-        tk.Button(command=self.lookup_member_pushed, text="Lookup Member").pack(side='bottom', expand=1, padx=5, pady=10)
+        #tk.Button(command=self.lookup_member_pushed, text="Lookup Member").pack(side='bottom', expand=1, padx=5, pady=10)
+        tk.Button(command=self.members_here_now_pushed, text="Members Here Now").pack(side='bottom', expand=1, padx=5, pady=10)
 
     def clear_window(self):  # https://stackoverflow.com/a/44955479
         list = root.grid_slaves()
@@ -94,6 +95,9 @@ class Splash(tk.Frame):
 
     def lookup_member_pushed(self):
         MemberLookup()
+
+    def members_here_now_pushed(self):
+        MemberLookup(context=SMWContext.MembersHereNow)
 
 
     def login_member(self, event):

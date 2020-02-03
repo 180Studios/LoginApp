@@ -14,12 +14,13 @@ class SMWContext(Enum):
     Search = 1
     SplashEntry = 2
     EditMember = 3
+    MembersHereNow = 4
 
 
 class MemberLookup():
     def __init__(self, master=None, search_str=None, context=None):
         self.ml_enter = Toplevel()
-        self.first_name_entry_sv = StringVar()
+        self.name_entry_sv = StringVar()
         # if not search_str:
             # nmw == New Member Window
 
@@ -30,20 +31,26 @@ class MemberLookup():
             self.ml_enter.withdraw()
             self.context = context
 
-            self.first_name_entry_sv.set(str(search_str))
+            self.name_entry_sv.set(str(search_str))
             self.search_for_member(event=None)
+
+        if context == SMWContext.MembersHereNow:
+            self.ml_enter.withdraw()
+            self.context = context
+
+            self.members_logged_in(event=None)
 
     def populate_searcher(self):
         row1 = Frame(self.ml_enter)
         row1.pack(side=TOP, fill=X, padx=20, pady=10)
-        Label(row1, text="Enter First Name").pack(side=TOP)
+        Label(row1, text="Enter Member First Or Last Name").pack(side=TOP)
 
         row2 = Frame(self.ml_enter)
         row2.pack(side=TOP, fill=X, padx=20, pady=10)
-        self.first_name_entry = Entry(row2, textvariable=self.first_name_entry_sv)
-        self.first_name_entry.pack()
-        self.first_name_entry.focus()
-        self.first_name_entry.bind('<Return>', self.search_for_member)
+        self.name_entry = Entry(row2, textvariable=self.name_entry_sv)
+        self.name_entry.pack()
+        self.name_entry.focus()
+        self.name_entry.bind('<Return>', self.search_for_member)
 
         row3 = Frame(self.ml_enter)
         row3.pack(side=TOP, fill=X, padx=20, pady=10)
@@ -62,16 +69,19 @@ class MemberLookup():
 
     def search_for_member(self, event=None):
         try:
-            self.search_string = str(self.first_name_entry_sv.get())
-            self.search_results = config.appDB.query_member(name_first=self.search_string)
+            self.search_string = str(self.name_entry_sv.get())
+            self.search_results = config.appDB.query_member(name_member=self.search_string)
             self.display_search_results(self.search_results)
             self.ml_enter.destroy()
         except LookupError:
             messagebox.showwarning(title="Problem locating member!",
-                                   message="No members with first name \"" + self.first_name_entry_sv.get() + "\" found!")
-            self.ml_enter.deiconify()
-            self.ml_enter.focus()
-            self.first_name_entry.focus_force()
+                                   message="No members with name \"" + self.name_entry_sv.get() + "\" found!")
+            if self.context == SMWContext.SplashEntry:
+                self.ml_enter.destroy()
+            else:
+                self.ml_enter.deiconify()
+                self.ml_enter.focus()
+                self.name_entry.focus_force()
 
     def members_logged_in(self, event=None):
         # Displays members logged in during the current calendar day
@@ -84,7 +94,10 @@ class MemberLookup():
         except LookupError:
             messagebox.showwarning(title="Problem locating members!",
                                    message="No members logged in today!")
-            self.ml_enter.focus()
+            if self.context == SMWContext.MembersHereNow:
+                self.ml_enter.destroy()
+            else:
+                self.ml_enter.focus()
 
     def display_search_results(self, results):
 
@@ -159,6 +172,7 @@ class MemberLookup():
         elif self.context == SMWContext.SplashEntry:  # In search window popped up from splash (first) screen
             Button(self.buttons, text="Print new barcode", command=self.newBarcode).grid(row=2, column=1, padx=3)
             Button(self.buttons, text="Login Member", command=self.search_return).grid(row=2, column=2, padx=3)
+            Button(self.buttons, text="Edit Member", command=self.edit_from_splash).grid(row=2, column=4, padx=3)
             if config.sign_offs_enabled:
                 Button(self.buttons, text="View Sign Offs", command=self.edit_sign_offs).grid(row=2, column=3, padx=3)
 
@@ -168,6 +182,12 @@ class MemberLookup():
 
         self.center(self.results_window)
         self.results_window.focus_force()
+
+
+    def edit_from_splash(self):
+        self.context = SMWContext.EditMember
+        self.search_return()
+        self.context = SMWContext.SplashEntry
 
 
     def newBarcode(self):
@@ -198,6 +218,7 @@ class MemberLookup():
         except IndexError:
             messagebox.showwarning(title="Problem locating member!",
                                    message="Please select a member from the list first")
+            self.results_window.focus_force()
 
 
     def copyMID(self):
@@ -214,6 +235,7 @@ class MemberLookup():
         except IndexError:
             messagebox.showwarning(title="Problem locating member!",
                                    message="Please select a member from the list first")
+            self.results_window.focus_force()
 
     def printStickers(self):
         sticker = Barcoder()
@@ -239,6 +261,7 @@ class MemberLookup():
         except IndexError:
             messagebox.showwarning(title="Problem locating member!",
                                    message="Please select a member from the list first")
+            self.results_window.focus_force()
 
     def search_return(self):
         cur_item = self.tree.focus()
@@ -263,3 +286,4 @@ class MemberLookup():
         except IndexError:
             messagebox.showwarning(title="Problem locating member!",
                                    message="Please select a member from the list first")
+            self.results_window.focus_force()
