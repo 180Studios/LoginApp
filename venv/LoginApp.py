@@ -47,7 +47,7 @@ class Splash(tk.Frame):
             sys.stderr = StdoutRedirector("ERR>> ")
 
     def create_splash(self):
-        self.scannerLabelText = tk.Label(text='Scan Member Card:')
+        self.scannerLabelText = tk.Label(text='Scan Member Card\n- OR -\nSearch By Member First Or Last Name:')
         self.scannerLabelText.pack(pady=10)
         self.scannerLabelText.pack(side='top', expand=0)
 

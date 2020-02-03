@@ -199,16 +199,18 @@ class LoginDatabase:
                         Returns: List of documents containing data of all the members matching the search in the 
                             members database """
 
-    def query_member(self, name_first="-1", log_date=None):
+    def query_member(self, name_member="-1", log_date=None):
         member = Query()
 
-        if name_first != "-1":
-            results = self.membersDB.search((member.name_first.matches(re.compile(name_first, re.IGNORECASE)))
-                                            & ~(member.deleted == True))
+        if name_member != "-1":
+            compiled_search = re.compile(name_member, re.IGNORECASE)
+            results = self.membersDB.search((member.name_first.matches(compiled_search)
+                                             | member.name_last.matches(compiled_search))
+                                             & ~(member.deleted == True))
 
 
             if not results:
-                raise LookupError("The entered first name could not be found in the database!")
+                raise LookupError("The entered name could not be found in the database!")
 
             return results
         elif log_date:

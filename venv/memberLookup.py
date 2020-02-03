@@ -19,7 +19,7 @@ class SMWContext(Enum):
 class MemberLookup():
     def __init__(self, master=None, search_str=None, context=None):
         self.ml_enter = Toplevel()
-        self.first_name_entry_sv = StringVar()
+        self.name_entry_sv = StringVar()
         # if not search_str:
             # nmw == New Member Window
 
@@ -30,20 +30,20 @@ class MemberLookup():
             self.ml_enter.withdraw()
             self.context = context
 
-            self.first_name_entry_sv.set(str(search_str))
+            self.name_entry_sv.set(str(search_str))
             self.search_for_member(event=None)
 
     def populate_searcher(self):
         row1 = Frame(self.ml_enter)
         row1.pack(side=TOP, fill=X, padx=20, pady=10)
-        Label(row1, text="Enter First Name").pack(side=TOP)
+        Label(row1, text="Enter Member First Or Last Name").pack(side=TOP)
 
         row2 = Frame(self.ml_enter)
         row2.pack(side=TOP, fill=X, padx=20, pady=10)
-        self.first_name_entry = Entry(row2, textvariable=self.first_name_entry_sv)
-        self.first_name_entry.pack()
-        self.first_name_entry.focus()
-        self.first_name_entry.bind('<Return>', self.search_for_member)
+        self.name_entry = Entry(row2, textvariable=self.name_entry_sv)
+        self.name_entry.pack()
+        self.name_entry.focus()
+        self.name_entry.bind('<Return>', self.search_for_member)
 
         row3 = Frame(self.ml_enter)
         row3.pack(side=TOP, fill=X, padx=20, pady=10)
@@ -62,16 +62,16 @@ class MemberLookup():
 
     def search_for_member(self, event=None):
         try:
-            self.search_string = str(self.first_name_entry_sv.get())
-            self.search_results = config.appDB.query_member(name_first=self.search_string)
+            self.search_string = str(self.name_entry_sv.get())
+            self.search_results = config.appDB.query_member(name_member=self.search_string)
             self.display_search_results(self.search_results)
             self.ml_enter.destroy()
         except LookupError:
             messagebox.showwarning(title="Problem locating member!",
-                                   message="No members with first name \"" + self.first_name_entry_sv.get() + "\" found!")
+                                   message="No members with name \"" + self.name_entry_sv.get() + "\" found!")
             self.ml_enter.deiconify()
             self.ml_enter.focus()
-            self.first_name_entry.focus_force()
+            self.name_entry.focus_force()
 
     def members_logged_in(self, event=None):
         # Displays members logged in during the current calendar day
